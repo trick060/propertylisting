@@ -1,600 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Property Listings</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    /* ── CSS VARIABLES – edit here to retheme everything ── */
-    :root {
-      --bg:          #f5f3ef;
-      --surface:     #ffffff;
-      --primary:     #1a1a1a;
-      --accent:      #c8a96e;
-      --accent-light:#f0e6d2;
-      --muted:       #7a7369;
-      --border:      #e4dfd8;
-      --tag-bg:      #edeae5;
-      --radius:      14px;
-      --shadow:      0 4px 24px rgba(0,0,0,0.07);
-      --shadow-hover:0 12px 40px rgba(0,0,0,0.13);
-      --font-display:'Playfair Display', Georgia, serif;
-      --font-body:   'DM Sans', sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Property Listings – Tanza, Cavite</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',sans-serif; background:#f4f1eb; color:#2c2c2c; padding:40px 20px; }
+  .page { max-width:820px; margin:0 auto; background:#fff; border-radius:4px; overflow:hidden; box-shadow:0 8px 40px rgba(0,0,0,0.12); }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  .header { background:linear-gradient(135deg,#1a3a2a 0%,#2d5f40 60%,#3a7a52 100%); padding:50px 50px 40px; position:relative; overflow:hidden; }
+  .header::before { content:''; position:absolute; top:-60px; right:-60px; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,0.05); }
+  .header::after { content:''; position:absolute; bottom:-80px; left:30%; width:300px; height:300px; border-radius:50%; background:rgba(255,255,255,0.04); }
+  .header-eyebrow { font-size:11px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#a8d5b5; margin-bottom:12px; }
+  .header h1 { font-family:'Playfair Display',serif; font-size:38px; font-weight:700; color:#fff; line-height:1.2; margin-bottom:10px; }
+  .header h1 span { color:#7ecfa0; }
+  .header-sub { font-size:14px; color:#b8d8c4; font-weight:300; margin-top:8px; }
+  .header-date { position:absolute; top:50px; right:50px; font-size:12px; color:#a8d5b5; text-align:right; }
 
-    body {
-      font-family: var(--font-body);
-      background: var(--bg);
-      color: var(--primary);
-      min-height: 100vh;
-    }
+  .summary-bar { background:#f9f6f0; border-bottom:1px solid #e8e2d8; padding:18px 50px; display:flex; gap:40px; }
+  .summary-item { text-align:center; }
+  .summary-item .num { font-size:22px; font-weight:700; color:#2d5f40; font-family:'Playfair Display',serif; }
+  .summary-item .lbl { font-size:11px; color:#888; letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
+  .summary-divider { width:1px; background:#ddd; align-self:stretch; }
 
-    /* ── HERO HEADER ── */
-    .hero {
-      background: var(--primary);
-      padding: 64px 40px 56px;
-      text-align: center;
-    }
-    .hero-label {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      padding: 6px 16px;
-      border-radius: 100px;
-      margin-bottom: 24px;
-    }
-    .hero h1 {
-      font-family: var(--font-display);
-      font-size: clamp(32px, 5vw, 58px);
-      font-weight: 700;
-      color: #fff;
-      line-height: 1.12;
-      margin-bottom: 16px;
-    }
-    .hero p {
-      font-size: 16px;
-      color: rgba(255,255,255,0.55);
-      font-weight: 300;
-      max-width: 480px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
+  .body { padding:40px 50px 50px; }
+  .section-title { font-family:'Playfair Display',serif; font-size:13px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#2d5f40; margin-bottom:24px; padding-bottom:10px; border-bottom:2px solid #e8f5ec; }
 
-    /* ── LISTINGS SECTION ── */
-    .listings-section {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 64px 32px 80px;
-    }
+  .card { background:#fff; border:1px solid #e8e2d8; border-radius:10px; margin-bottom:28px; overflow:hidden; }
+  .card-header { background:linear-gradient(90deg,#1a3a2a,#2d5f40); padding:14px 22px; display:flex; justify-content:space-between; align-items:center; }
+  .listing-num { font-size:10px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#7ecfa0; }
+  .listing-type-badge { background:rgba(255,255,255,0.15); color:#fff; font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; padding:4px 10px; border-radius:20px; }
+  .card-body { padding:20px 22px; }
 
-    .section-meta {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      margin-bottom: 36px;
-    }
-    .section-meta h2 {
-      font-family: var(--font-display);
-      font-size: 22px;
-      font-weight: 600;
-      color: var(--primary);
-    }
-    .count-badge {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--muted);
-      background: var(--tag-bg);
-      padding: 4px 12px;
-      border-radius: 100px;
-    }
+  .property-name { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:#1a2e22; margin-bottom:4px; }
+  .property-location { font-size:12px; color:#888; font-weight:400; margin-bottom:16px; display:flex; align-items:center; gap:4px; }
+  .property-location::before { content:'📍'; font-size:11px; }
 
-    /* ── GRID ── */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 28px;
-    }
+  .card-details { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+  .detail-pill { display:flex; align-items:center; gap:6px; background:#f4f9f6; border:1px solid #d4eadb; border-radius:6px; padding:7px 14px; font-size:12px; color:#2d5f40; font-weight:500; }
 
-    /* ── CARD ── */
-    .card {
-      background: var(--surface);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      display: flex;
-      flex-direction: column;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-hover);
-    }
+  .price-row { display:flex; align-items:center; justify-content:space-between; background:#f9f6f0; border:1px solid #e8e2d8; border-radius:8px; padding:12px 16px; margin-top:8px; margin-bottom:20px; }
+  .price-label { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#aaa; font-weight:500; }
+  .price-value { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:#1a3a2a; }
+  .price-value.tbc { font-size:14px; color:#c07d2a; font-weight:600; font-family:'Inter',sans-serif; }
+  .price-note { font-size:11px; color:#aaa; margin-top:2px; text-align:right; }
+  .price-note.warn { color:#c07d2a; font-weight:500; }
 
-    /* IMAGE */
-    .card-image {
-      position: relative;
-      width: 100%;
-      height: 220px;
-      background: var(--tag-bg);
-      overflow: hidden;
-    }
-    .card-image img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.5s ease;
-    }
-    .card:hover .card-image img { transform: scale(1.04); }
+  .map-label { font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:#2d5f40; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+  .map-label::before { content:'🗺️'; font-size:13px; }
+  .map-wrapper { border-radius:8px; overflow:hidden; border:1px solid #d4eadb; }
+  .map-wrapper iframe { display:block; width:100%; height:260px; border:0; }
+  .no-map { background:#f4f9f6; border:1px dashed #b8d8c4; border-radius:8px; padding:18px; text-align:center; font-size:12px; color:#7aaa8a; }
 
-    /* STATUS TAG */
-    .status-tag {
-      position: absolute;
-      top: 14px; left: 14px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      background: var(--accent);
-      color: #fff;
-      padding: 5px 12px;
-      border-radius: 100px;
-    }
-    .status-tag.rent  { background: #4a8c6f; }
-    .status-tag.sold  { background: #888; }
+  .footer { background:#1a3a2a; padding:28px 50px; display:flex; justify-content:space-between; align-items:center; }
+  .footer-brand { font-family:'Playfair Display',serif; font-size:16px; color:#7ecfa0; font-weight:600; }
+  .footer-note { font-size:11px; color:#6a9a7a; text-align:right; line-height:1.6; }
 
-    /* SAVE BUTTON */
-    .save-btn {
-      position: absolute;
-      top: 12px; right: 14px;
-      width: 34px; height: 34px;
-      background: rgba(255,255,255,0.92);
-      border: none; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .save-btn:hover { background: #fff; }
-    .save-btn svg { width: 16px; height: 16px; stroke: var(--primary); fill: none; stroke-width: 1.8; }
-
-    /* BODY */
-    .card-body {
-      padding: 22px 22px 18px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    /* LOCATION */
-    .location {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .location svg { width: 12px; height: 12px; stroke: var(--accent); fill: none; stroke-width: 2; flex-shrink: 0; }
-
-    /* NAME */
-    .card-name {
-      font-family: var(--font-display);
-      font-size: 19px;
-      font-weight: 600;
-      color: var(--primary);
-      line-height: 1.3;
-    }
-
-    /* SPECS ROW */
-    .specs {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .spec {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 12.5px;
-      color: var(--muted);
-      font-weight: 400;
-    }
-    .spec svg { width: 13px; height: 13px; stroke: var(--accent); fill: none; stroke-width: 1.8; }
-
-    /* DIVIDER */
-    .divider { height: 1px; background: var(--border); margin: 4px 0; }
-
-    /* FOOTER ROW */
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 22px 18px;
-      gap: 12px;
-    }
-    .price {
-      font-family: var(--font-display);
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--primary);
-    }
-    .price span {
-      font-family: var(--font-body);
-      font-size: 12px;
-      font-weight: 400;
-      color: var(--muted);
-    }
-
-    /* MAP LINK */
-    .map-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent);
-      text-decoration: none;
-      border: 1px solid var(--accent-light);
-      background: var(--accent-light);
-      padding: 7px 14px;
-      border-radius: 100px;
-      transition: background 0.2s, color 0.2s;
-      white-space: nowrap;
-    }
-    .map-btn:hover { background: var(--accent); color: #fff; }
-    .map-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
-
-    /* NO MAP */
-    .no-map {
-      font-size: 11px;
-      color: var(--border);
-      font-weight: 500;
-    }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 600px) {
-      .hero { padding: 48px 20px 40px; }
-      .listings-section { padding: 40px 16px 60px; }
-      .grid { grid-template-columns: 1fr; gap: 20px; }
-    }
-
-    /* ── FADE-IN ANIMATION ── */
-    .card {
-      animation: fadeUp 0.5s ease both;
-    }
-    .card:nth-child(1) { animation-delay: 0.05s; }
-    .card:nth-child(2) { animation-delay: 0.10s; }
-    .card:nth-child(3) { animation-delay: 0.15s; }
-    .card:nth-child(4) { animation-delay: 0.20s; }
-    .card:nth-child(5) { animation-delay: 0.25s; }
-    .card:nth-child(6) { animation-delay: 0.30s; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  @media print { body { background:#fff; padding:0; } .page { box-shadow:none; } }
+</style>
 </head>
 <body>
+<div class="page">
 
-<!-- ══ HERO ══════════════════════════════════════════════ -->
-<header class="hero">
-  <div class="hero-label">Property Listings</div>
-  <h1>Find Your<br/>Next Property</h1>
-  <p>Browse available lot and house-and-lot listings</p>
-</header>
-
-<!-- ══ LISTINGS ══════════════════════════════════════════ -->
-<section class="listings-section">
-
-  <div class="section-meta">
-    <h2>Available Properties</h2>
-    <span class="count-badge">6 Properties</span>
+  <div class="header">
+    <div class="header-date">April 2026<br><span style="font-size:10px;opacity:.7;">Property Listings</span></div>
+    <div class="header-eyebrow">Real Estate Listings</div>
+    <h1>Properties in<br><span>Tanza, Cavite</span></h1>
+    <div class="header-sub">Curated land and residential listings available for sale</div>
   </div>
 
-  <div class="grid">
+  <div class="summary-bar">
+    <div class="summary-item"><div class="num">4</div><div class="lbl">Total Listings</div></div>
+    <div class="summary-divider"></div>
+    <div class="summary-item"><div class="num">3</div><div class="lbl">Lot Only</div></div>
+    <div class="summary-divider"></div>
+    <div class="summary-item"><div class="num">1</div><div class="lbl">House & Lot</div></div>
+    <div class="summary-divider"></div>
+    <div class="summary-item"><div class="num">₱1.5M+</div><div class="lbl">Starting Price</div></div>
+  </div>
 
-    <!-- ──────────────────────────────────────────
-         CARD 1  ← Edit each card's details here
-    ─────────────────────────────────────────── -->
+  <div class="body">
+    <div class="section-title">Available Properties</div>
+
+    <!-- Listing 1 -->
     <div class="card">
-      <div class="card-image">
-        <!-- Replace src with your property image URL -->
-        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700&q=80" alt="Modern Villa"/>
-        <span class="status-tag">For Sale</span>
-        <button class="save-btn" title="Save">
-          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </button>
+      <div class="card-header">
+        <span class="listing-num">Listing #001</span>
+        <span class="listing-type-badge">Lot Only</span>
       </div>
       <div class="card-body">
-        <div class="location">
-          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <!-- Edit: suburb, state -->
-          Toorak, VIC
+        <div class="property-name">Workersville</div>
+        <div class="property-location">Punta 1, Tanza, Cavite</div>
+        <div class="card-details">
+          <div class="detail-pill">📐 112 SQM</div>
+          <div class="detail-pill">🏘️ Residential Lot</div>
         </div>
-        <!-- Edit: property name / title -->
-        <div class="card-name">Luxe Modern Villa</div>
-        <div class="specs">
-          <!-- Edit: bedrooms -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-            4 Beds
-          </div>
-          <!-- Edit: bathrooms -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><path d="M4 12h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-6z"/><path d="M7 12V5a3 3 0 0 1 6 0v1"/></svg>
-            3 Baths
-          </div>
-          <!-- Edit: sqm -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-            320 m²
+        <div class="price-row">
+          <div><div class="price-label">Asking Price</div></div>
+          <div style="text-align:right;">
+            <div class="price-value">₱2,000,000</div>
+            <div class="price-note">≈ ₱17,857 / SQM</div>
           </div>
         </div>
-      </div>
-      <div class="divider"></div>
-      <div class="card-footer">
-        <!-- Edit: price -->
-        <div class="price">₱2,450,000 <span>PHP</span></div>
-        <!-- Edit: Google Maps link. Remove <a> and show .no-map if no map available -->
-        <a class="map-btn" href="https://maps.google.com/?q=Toorak+VIC" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
-          View Map
-        </a>
+        <div class="map-label">Location Map</div>
+        <div class="map-wrapper">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3865.163642649897!2d120.859714!3d14.3599399!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33962b001c93672d%3A0x4ca4eac313eab4e3!2sWorkersville%2Cpunta%201%20tanza%20cavite!5e0!3m2!1sen!2sph!4v1775617913535!5m2!1sen!2sph" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
       </div>
     </div>
 
-    <!-- ── CARD 2 ── -->
-     <div class="card">
-      <div class="card-image">
-        <!-- Replace src with your property image URL -->
-        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700&q=80" alt="Modern Villa"/>
-        <span class="status-tag">For Sale</span>
-        <button class="save-btn" title="Save">
-          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </button>
-      </div>
-      <div class="card-body">
-        <div class="location">
-          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <!-- Edit: suburb, state -->
-          Toorak, VIC
-        </div>
-        <!-- Edit: property name / title -->
-        <div class="card-name">Luxe Modern Villa</div>
-        <div class="specs">
-          <!-- Edit: bedrooms -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-            4 Beds
-          </div>
-          <!-- Edit: bathrooms -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><path d="M4 12h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-6z"/><path d="M7 12V5a3 3 0 0 1 6 0v1"/></svg>
-            3 Baths
-          </div>
-          <!-- Edit: sqm -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-            320 m²
-          </div>
-        </div>
-      </div>
-      <div class="divider"></div>
-      <div class="card-footer">
-        <!-- Edit: price -->
-        <div class="price">₱2,450,000 <span>PHP</span></div>
-        <!-- Edit: Google Maps link. Remove <a> and show .no-map if no map available -->
-        <a class="map-btn" href="https://maps.google.com/?q=Toorak+VIC" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
-          View Map
-        </a>
-      </div>
-    </div>
-
-    <!-- ── CARD 3 ── -->
-     <div class="card">
-      <div class="card-image">
-        <!-- Replace src with your property image URL -->
-        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700&q=80" alt="Modern Villa"/>
-        <span class="status-tag">For Sale</span>
-        <button class="save-btn" title="Save">
-          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </button>
-      </div>
-      <div class="card-body">
-        <div class="location">
-          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <!-- Edit: suburb, state -->
-          Toorak, VIC
-        </div>
-        <!-- Edit: property name / title -->
-        <div class="card-name">Luxe Modern Villa</div>
-        <div class="specs">
-          <!-- Edit: bedrooms -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-            4 Beds
-          </div>
-          <!-- Edit: bathrooms -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><path d="M4 12h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-6z"/><path d="M7 12V5a3 3 0 0 1 6 0v1"/></svg>
-            3 Baths
-          </div>
-          <!-- Edit: sqm -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-            320 m²
-          </div>
-        </div>
-      </div>
-      <div class="divider"></div>
-      <div class="card-footer">
-        <!-- Edit: price -->
-        <div class="price">₱2,450,000 <span>PHP</span></div>
-        <!-- Edit: Google Maps link. Remove <a> and show .no-map if no map available -->
-        <a class="map-btn" href="https://maps.google.com/?q=Toorak+VIC" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
-          View Map
-        </a>
-      </div>
-    </div>
-
-    <!-- ── CARD 4 ── -->
-     <div class="card">
-      <div class="card-image">
-        <!-- Replace src with your property image URL -->
-        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700&q=80" alt="Modern Villa"/>
-        <span class="status-tag">For Sale</span>
-        <button class="save-btn" title="Save">
-          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </button>
-      </div>
-      <div class="card-body">
-        <div class="location">
-          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <!-- Edit: suburb, state -->
-          Toorak, VIC
-        </div>
-        <!-- Edit: property name / title -->
-        <div class="card-name">Luxe Modern Villa</div>
-        <div class="specs">
-          <!-- Edit: bedrooms -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-            4 Beds
-          </div>
-          <!-- Edit: bathrooms -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><path d="M4 12h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-6z"/><path d="M7 12V5a3 3 0 0 1 6 0v1"/></svg>
-            3 Baths
-          </div>
-          <!-- Edit: sqm -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-            320 m²
-          </div>
-        </div>
-      </div>
-      <div class="divider"></div>
-      <div class="card-footer">
-        <!-- Edit: price -->
-        <div class="price">₱2,450,000 <span>PHP</span></div>
-        <!-- Edit: Google Maps link. Remove <a> and show .no-map if no map available -->
-        <a class="map-btn" href="https://maps.google.com/?q=Toorak+VIC" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
-          View Map
-        </a>
-      </div>
-    </div>
-
-    <!-- ── CARD 5 ── -->
+    <!-- Listing 2 -->
     <div class="card">
-      <div class="card-image">
-        <!-- Replace src with your property image URL -->
-        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700&q=80" alt="Modern Villa"/>
-        <span class="status-tag">For Sale</span>
-        <button class="save-btn" title="Save">
-          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </button>
+      <div class="card-header">
+        <span class="listing-num">Listing #002</span>
+        <span class="listing-type-badge">Lot Only</span>
       </div>
       <div class="card-body">
-        <div class="location">
-          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <!-- Edit: suburb, state -->
-          Toorak, VIC
+        <div class="property-name">Monteverde Subdivision</div>
+        <div class="property-location">Mulawin, Tanza, Cavite</div>
+        <div class="card-details">
+          <div class="detail-pill">📐 87 SQM</div>
+          <div class="detail-pill">🏘️ Residential Lot</div>
         </div>
-        <!-- Edit: property name / title -->
-        <div class="card-name">Luxe Modern Villa</div>
-        <div class="specs">
-          <!-- Edit: bedrooms -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-            4 Beds
-          </div>
-          <!-- Edit: bathrooms -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><path d="M4 12h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-6z"/><path d="M7 12V5a3 3 0 0 1 6 0v1"/></svg>
-            3 Baths
-          </div>
-          <!-- Edit: sqm -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-            320 m²
+        <div class="price-row">
+          <div><div class="price-label">Asking Price</div></div>
+          <div style="text-align:right;">
+            <div class="price-value">₱1,500,000</div>
+            <div class="price-note">≈ ₱17,241 / SQM</div>
           </div>
         </div>
-      </div>
-      <div class="divider"></div>
-      <div class="card-footer">
-        <!-- Edit: price -->
-        <div class="price">₱2,450,000 <span>PHP</span></div>
-        <!-- Edit: Google Maps link. Remove <a> and show .no-map if no map available -->
-        <a class="map-btn" href="https://maps.google.com/?q=Toorak+VIC" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
-          View Map
-        </a>
-      </div>
-    </div>
-    <!-- ── CARD 6 ── -->
-     <div class="card">
-      <div class="card-image">
-        <!-- Replace src with your property image URL -->
-        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700&q=80" alt="Modern Villa"/>
-        <span class="status-tag">For Sale</span>
-        <button class="save-btn" title="Save">
-          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </button>
-      </div>
-      <div class="card-body">
-        <div class="location">
-          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <!-- Edit: suburb, state -->
-          Toorak, VIC
+        <div class="map-label">Location Map</div>
+        <div class="map-wrapper">
+          <iframe src="https://www.google.com/maps/embed?pb=!4v1775617936127!6m8!1m7!1sFVnVO1FqTrZErosnn3d8DQ!2m2!1d14.38094888912414!2d120.8545083789972!3f271.87!4f0.7800000000000011!5f0.7820865974627469" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
-        <!-- Edit: property name / title -->
-        <div class="card-name">Luxe Modern Villa</div>
-        <div class="specs">
-          <!-- Edit: bedrooms -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-            4 Beds
-          </div>
-          <!-- Edit: bathrooms -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><path d="M4 12h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-6z"/><path d="M7 12V5a3 3 0 0 1 6 0v1"/></svg>
-            3 Baths
-          </div>
-          <!-- Edit: sqm -->
-          <div class="spec">
-            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-            320 m²
-          </div>
-        </div>
-      </div>
-      <div class="divider"></div>
-      <div class="card-footer">
-        <!-- Edit: price -->
-        <div class="price">₱2,450,000 <span>PHP</span></div>
-        <!-- Edit: Google Maps link. Remove <a> and show .no-map if no map available -->
-        <a class="map-btn" href="https://maps.google.com/?q=Toorak+VIC" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
-          View Map
-        </a>
       </div>
     </div>
 
-  </div><!-- /.grid -->
-</section>
+    <!-- Listing 3 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="listing-num">Listing #003</span>
+        <span class="listing-type-badge">Lot Only</span>
+      </div>
+      <div class="card-body">
+        <div class="property-name">Bahay Pangarap</div>
+        <div class="property-location">Sanja Mayor, Tanza, Cavite</div>
+        <div class="card-details">
+          <div class="detail-pill">📐 100 SQM</div>
+          <div class="detail-pill">🏘️ Residential Lot</div>
+        </div>
+        <div class="price-row">
+          <div><div class="price-label">Asking Price</div></div>
+          <div style="text-align:right;">
+            <div class="price-value tbc">⏳ Price to be confirmed</div>
+            <div class="price-note">Contact seller for details</div>
+          </div>
+        </div>
+        <div class="map-label">Location Map</div>
+        <div class="map-wrapper">
+          <iframe src="https://www.google.com/maps/embed?pb=!4v1775617955292!6m8!1m7!1sopidKkaCOTQSeruBs9_2Bg!2m2!1d14.37840470566946!2d120.854029024003!3f272.9791139076436!4f-12.170000000000002!5f0.7820865974627469" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    </div>
 
+    <!-- Listing 4 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="listing-num">Listing #004</span>
+        <span class="listing-type-badge">House & Lot</span>
+      </div>
+      <div class="card-body">
+        <div class="property-name">Monteverde Subdivision</div>
+        <div class="property-location">Mulawin, Tanza, Cavite</div>
+        <div class="card-details">
+          <div class="detail-pill">📐 Area TBD</div>
+          <div class="detail-pill">🏠 House & Lot</div>
+        </div>
+        <div class="price-row">
+          <div><div class="price-label">Asking Price</div></div>
+          <div style="text-align:right;">
+            <div class="price-value">₱9,000,000</div>
+            <div class="price-note warn">Open for negotiation</div>
+          </div>
+        </div>
+         <div class="map-wrapper">
+          <iframe src="https://www.google.com/maps/embed?pb=!4v1775617936127!6m8!1m7!1sFVnVO1FqTrZErosnn3d8DQ!2m2!1d14.38094888912414!2d120.8545083789972!3f271.87!4f0.7800000000000011!5f0.7820865974627469" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="footer-brand">Tanza Cavite Properties</div>
+    <div class="footer-note">All listings are subject to change without prior notice.<br>Prices and availability as of April 2026.</div>
+  </div>
+
+</div>
 </body>
 </html>
